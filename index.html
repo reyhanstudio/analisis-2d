@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>analisis-2d - Alat Analisa Ekor Harian</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <div class="brand-area">
+        <img src="logo.png" class="brand-logo" alt="analisis-2d">
+        <div class="brand-text">
+            <h1>analisis-<span>2d</span></h1>
+            <p>Data. Wawasan. Visualisasi.</p>
+        </div>
+    </div>
+
+    <div class="header-info">
+        <div class="countdown-card">
+            <span class="countdown-label">RESULT</span>
+            <strong id="countdownResult">00:00:00</strong>
+            <small>Setiap hari 17:00 WIB</small>
+        </div>
+
+        <div class="countdown-card">
+            <span class="countdown-label">WIB</span>
+            <strong id="clockWIB">00:00:00</strong>
+            <small id="tanggalWIB">-</small>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="card input-card">
+        <div class="section-header">
+            <div>
+                <span class="section-kicker">DATABASE</span>
+                <h2>Input Data</h2>
+            </div>
+            <span class="data-count" id="dataCount">0 Data</span>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="loadTab">Load Awal</button>
+            <button class="tab-btn" data-tab="dailyTab">Input Harian</button>
+        </div>
+
+        <div class="tab-content active" id="loadTab">
+            <label for="spreadsheetData">Data Spreadsheet</label>
+            <textarea id="spreadsheetData" placeholder="2026-01-01, 7382
+2026-01-02, 1456
+2026-01-03, 9081"></textarea>
+            <button class="btn-primary" onclick="loadDataAwal()">Load dari Spreadsheet</button>
+        </div>
+
+        <div class="tab-content" id="dailyTab">
+            <div class="form-group">
+                <label for="tanggalInput">Tanggal</label>
+                <input type="date" id="tanggalInput">
+            </div>
+
+            <div class="form-group">
+                <label for="hasilInput">Hasil 4D</label>
+                <input type="text" id="hasilInput" inputmode="numeric" maxlength="4" placeholder="Contoh: 7382">
+            </div>
+
+            <button class="btn-primary" onclick="tambahDataHariIni()">Simpan Hasil</button>
+
+            <div class="input-note">
+                <span>●</span>
+                Input tetap terbuka. Jam 17:00 adalah waktu Result.
+            </div>
+        </div>
+    </section>
+
+    <section class="card result-card">
+        <div class="section-header">
+            <div>
+                <span class="section-kicker">STATISTIK</span>
+                <h2>TOP 3 EKOR WAJIB</h2>
+            </div>
+            <span class="analysis-period">10 Hari</span>
+        </div>
+
+        <div class="latest-result">
+            <div>
+                <span>RESULT TERAKHIR</span>
+                <small id="latestDate">Belum ada data</small>
+            </div>
+            <strong id="latestResult">-</strong>
+        </div>
+
+        <div class="ekor-list" id="topEkor">
+            <div class="ekor-card">
+                <div class="rank">1</div>
+                <div class="ekor-number">-</div>
+                <div class="ekor-info">
+                    <strong>Menunggu data</strong>
+                    <span>Belum cukup data untuk analisa</span>
+                </div>
+                <div class="strength">
+                    <strong>0%</strong>
+                    <span>WAIT</span>
+                </div>
+            </div>
+
+            <div class="ekor-card">
+                <div class="rank">2</div>
+                <div class="ekor-number">-</div>
+                <div class="ekor-info">
+                    <strong>Menunggu data</strong>
+                    <span>Belum cukup data untuk analisa</span>
+                </div>
+                <div class="strength">
+                    <strong>0%</strong>
+                    <span>WAIT</span>
+                </div>
+            </div>
+
+            <div class="ekor-card">
+                <div class="rank">3</div>
+                <div class="ekor-number">-</div>
+                <div class="ekor-info">
+                    <strong>Menunggu data</strong>
+                    <span>Belum cukup data untuk analisa</span>
+                </div>
+                <div class="strength">
+                    <strong>0%</strong>
+                    <span>WAIT</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="analysis-note">
+            <span>i</span>
+            <p>Persentase adalah indeks kekuatan statistik dari data historis, bukan probabilitas pasti hasil berikutnya.</p>
+        </div>
+    </section>
+
+    <section class="card chart-card">
+        <div class="section-header">
+            <div>
+                <span class="section-kicker">VISUALISASI</span>
+                <h2>Frekuensi Ekor</h2>
+            </div>
+            <span class="chart-period">10 Data Terakhir</span>
+        </div>
+
+        <div class="chart-wrapper">
+            <canvas id="chartFreq"></canvas>
+        </div>
+    </section>
+
+    <section class="card tools-card">
+        <div class="section-header">
+            <div>
+                <span class="section-kicker">TOOLS</span>
+                <h2>Alat Bantu</h2>
+            </div>
+        </div>
+
+        <div class="calculator">
+            <label for="angkaKalkulator">Kalkulator x100</label>
+            <div class="calc-row">
+                <input type="number" id="angkaKalkulator" placeholder="Masukkan angka">
+                <button class="btn-primary" onclick="kalkulator()">Hitung</button>
+            </div>
+            <div class="calc-result" id="hasilKalkulator">Hasil: -</div>
+        </div>
+
+        <div class="tool-actions">
+            <button class="btn-outline" onclick="simulasi10Hari()">Simulasi 10 Hari</button>
+            <button class="btn-danger" onclick="resetData()">Reset Semua Data</button>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>© 2026 analisis-2d</p>
+    <span>Disclaimer: ALAT INI HANYA ANALISA STATISTIK. HASIL GAME TETAP ACAK 100%.</span>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
